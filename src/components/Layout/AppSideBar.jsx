@@ -5,6 +5,10 @@ import { fakeFetchCrypto, FetchAssets } from "../../api";
 const siderStyle = {
   padding: "1rem",
 };
+
+function percentDifference(a, b) {
+  return 100 * Math.abs((a - b) / ((a + b) / 2));
+}
 function AppSideBar(props) {
   const [loading, setLoading] = useState(false);
   const [crypto, setCrypto] = useState([]);
@@ -22,7 +26,18 @@ function AppSideBar(props) {
       setLoading(true);
       const { result } = await fakeFetchCrypto();
       const assets = await FetchAssets();
-      setAssets(assets);
+      setAssets(
+        assets.map((asset) => {
+          const coin = result.find((c) => c.id === asset.id);
+          return {
+            grow: asset.price < coin.price,
+            growPercent: percentDifference(asset.price, coin.price),
+            totalAmount: asset.amount * coin.price,
+            totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+            ...asset,
+          };
+        }),
+      );
       setCrypto(result);
       setLoading(false);
     }
