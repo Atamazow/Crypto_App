@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Layout, Card, Statistic, List, Typography, Spin } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { fakeFetchCrypto, FetchAssets } from "../../api";
+import { percentDifference } from "../../utils.js";
 const siderStyle = {
   padding: "1rem",
 };
 
-function percentDifference(a, b) {
-  return 100 * Math.abs((a - b) / ((a + b) / 2));
-}
 function AppSideBar(props) {
   const [loading, setLoading] = useState(false);
   const [crypto, setCrypto] = useState([]);
@@ -50,39 +48,41 @@ function AppSideBar(props) {
 
   return (
     <Layout.Sider width="25%" style={siderStyle}>
-      <Card style={{ marginBottom: "1rem" }}>
-        <Statistic
-          title="Active"
-          value={11.28}
-          precision={2}
-          valueStyle={{
-            color: "#3f8600",
-          }}
-          prefix={<ArrowUpOutlined />}
-          suffix="%"
-        />
-        <List
-          size="small"
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item>
-              <Typography.Text mark>[ITEM]</Typography.Text> {item}
-            </List.Item>
-          )}
-        />
-      </Card>
-      <Card>
-        <Statistic
-          title="Idle"
-          value={9.3}
-          precision={2}
-          valueStyle={{
-            color: "#cf1322",
-          }}
-          prefix={<ArrowDownOutlined />}
-          suffix="%"
-        />
-      </Card>{" "}
+      {assets.map((asset) => (
+        <Card key={asset.id} style={{ marginBottom: "1rem" }}>
+          <Statistic
+            title={asset.id}
+            value={asset.totalAmount}
+            precision={2}
+            valueStyle={{
+              color: asset.grow ? "#3f8600" : "#cf1322",
+            }}
+            prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            suffix="$"
+          />
+          <List
+            size="small"
+            dataSource={data}
+            renderItem={(item) => (
+              <List.Item>
+                <Typography.Text mark>[ITEM]</Typography.Text> {item}
+              </List.Item>
+            )}
+          />
+        </Card>
+      ))}
+      {/*<Card>*/}
+      {/*  <Statistic*/}
+      {/*    title="Idle"*/}
+      {/*    value={9.3}*/}
+      {/*    precision={2}*/}
+      {/*    valueStyle={{*/}
+      {/*      color: "#cf1322",*/}
+      {/*    }}*/}
+      {/*    prefix={<ArrowDownOutlined />}*/}
+      {/*    suffix="%"*/}
+      {/*  />*/}
+      {/*</Card>{" "}*/}
     </Layout.Sider>
   );
 }
