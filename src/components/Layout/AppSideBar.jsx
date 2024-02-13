@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Card, Statistic, List, Typography, Spin } from "antd";
+import { Layout, Card, Statistic, List, Typography, Spin, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { fakeFetchCrypto, FetchAssets } from "../../api";
-import { percentDifference } from "../../utils.js";
+import { percentDifference, capitalize } from "../../utils.js";
 const siderStyle = {
   padding: "1rem",
 };
@@ -51,7 +51,7 @@ function AppSideBar(props) {
       {assets.map((asset) => (
         <Card key={asset.id} style={{ marginBottom: "1rem" }}>
           <Statistic
-            title={asset.id}
+            title={capitalize(asset.id)}
             value={asset.totalAmount}
             precision={2}
             valueStyle={{
@@ -62,10 +62,31 @@ function AppSideBar(props) {
           />
           <List
             size="small"
-            dataSource={data}
+            dataSource={[
+              {
+                title: "Total Profit",
+                value: asset.totalProfit,
+                withTag: true,
+              },
+              { title: "Asset Amount", value: asset.amount, isPlain: true },
+              // { title: "Difference", value: asset.growPercent },
+            ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text mark>[ITEM]</Typography.Text> {item}
+                <span>{item.title}</span>
+                <span>
+                  {item.withTag && (
+                    <Tag color={asset.grow ? "green" : "red"}>
+                      {asset.growPercent}%
+                    </Tag>
+                  )}
+                  {item.isPlain && item.value}
+                  {!item.isPlain && (
+                    <Typography.Text type={asset.grow ? "success" : "danger"}>
+                      {item.value.toFixed(2)} $
+                    </Typography.Text>
+                  )}
+                </span>
               </List.Item>
             )}
           />
