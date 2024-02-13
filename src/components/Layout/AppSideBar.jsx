@@ -1,47 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Layout, Card, Statistic, List, Typography, Spin, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
-import { fakeFetchCrypto, FetchAssets } from "../../api";
-import { percentDifference, capitalize } from "../../utils.js";
+import { capitalize } from "../../utils.js";
+import cryptoContext from "../../Context/crypto-context.jsx";
 const siderStyle = {
   padding: "1rem",
 };
 
 function AppSideBar(props) {
-  const [loading, setLoading] = useState(false);
-  const [crypto, setCrypto] = useState([]);
-  const [assets, setAssets] = useState([]);
-  const data = [
-    "Racing car sprays burning fuel into crowd.",
-    "Japanese princess to wed commoner.",
-    "Australian walks 100km after outback crash.",
-    "Man charged over missing wedding girl.",
-    "Los Angeles battles huge wildfires.",
-  ];
-
-  useEffect(() => {
-    async function preLoad() {
-      setLoading(true);
-      const { result } = await fakeFetchCrypto();
-      const assets = await FetchAssets();
-      setAssets(
-        assets.map((asset) => {
-          const coin = result.find((c) => c.id === asset.id);
-          return {
-            grow: asset.price < coin.price,
-            growPercent: percentDifference(asset.price, coin.price),
-            totalAmount: asset.amount * coin.price,
-            totalProfit: asset.amount * coin.price - asset.amount * asset.price,
-            ...asset,
-          };
-        }),
-      );
-      setCrypto(result);
-      setLoading(false);
-    }
-    preLoad();
-  }, []);
-
+  const { loading, assets } = useContext(cryptoContext);
   if (loading) {
     return <Spin fullscreen />;
   }
