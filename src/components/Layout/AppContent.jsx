@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Layout } from "antd";
+import CryptoContext from "../../Context/crypto-context";
 const contentStyle = {
   textAlign: "center",
   minHeight: "calc(100vh - 60px)",
@@ -12,3 +13,7 @@ function AppContent(props) {
 }
 
 export default AppContent;
+
+export function useCrypto() {
+  return useContext(CryptoContext)
+}
