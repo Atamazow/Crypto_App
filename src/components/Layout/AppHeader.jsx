@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Button, Select, Space } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Button, Select, Space, Modal } from "antd";
 import { useCrypto } from "./AppContent";
 
 const headerStyle = {
@@ -14,13 +14,33 @@ const headerStyle = {
 };
  
 function AppHeader(props) {
+  const [select, useSelect] = useState(false)
+  const [modal, setModal] = useState(false) 
   const {crypto} = useCrypto()
+  useEffect(() => {
+    const keypress = event => {
+      if(event.key === '/') {
+        useSelect(prev => !prev)
+      }
+    }
+    window.addEventListener('keypress', keypress)
+    return () => {
+      window.removeEventListener('keypress', keypress)
+    }
+  }, [])
+
+  const handleSelect = (value) => {
+    setModal(true)
+  }
   return <Layout.Header style={headerStyle}><Select
   style={{
     width: 250,
   }}
   value='press / to open'
+  open={select}
   optionLabelProp="label"
+  onSelect={handleSelect}
+  onClick={() => useSelect(prev => !prev)}
   options={crypto.map(coin => ({
     label: coin.name,
     icon: coin.icon,
@@ -33,6 +53,11 @@ function AppHeader(props) {
     </Space>
   )}/>
   <Button type="primary">Primary Button</Button>
+  <Modal  open={modal} onCancel={() => setModal(false)} footer={null} >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
 </Layout.Header>;
 }
 
