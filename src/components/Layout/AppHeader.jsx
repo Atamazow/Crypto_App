@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Button, Select, Space, Modal } from "antd";
+import { Layout, Button, Select, Space, Modal, Drawer  } from "antd";
 import { useCrypto } from "./AppContent";
-
+import CoinInfoModal from "../CoinInfoModal";
+import AddAssetForm from "../AddAssetForm";
+ 
 const headerStyle = {
-  width: '100%',
-  textAlign: "center",
   color: "#fff",
   height: 60,
+  display: 'flex',
   backgroundColor: "#4096ff",
-  display: "flex",
-  justifyContext: 'space-beetween',
+  justifyContent: 'space-between',
   alignItems: 'center'
 };
  
 function AppHeader(props) {
   const [select, useSelect] = useState(false)
-  const [modal, setModal] = useState(false) 
+  const [modal, setModal] = useState(false)
+  const [coin, setCoin] = useState(null) 
   const {crypto} = useCrypto()
+  const [drawer, setDrawer] = useState(false)
   useEffect(() => {
     const keypress = event => {
       if(event.key === '/') {
@@ -30,6 +32,7 @@ function AppHeader(props) {
   }, [])
 
   const handleSelect = (value) => {
+    setCoin(crypto.find(c => c.id === value))
     setModal(true)
   }
   return <Layout.Header style={headerStyle}><Select
@@ -52,12 +55,13 @@ function AppHeader(props) {
       {option.data.label}
     </Space>
   )}/>
-  <Button type="primary">Primary Button</Button>
-  <Modal  open={modal} onCancel={() => setModal(false)} footer={null} >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+  <Button type="primary" onClick={() => setDrawer(true)}>Primary Button</Button>
+       <Modal  open={modal} onCancel={() => setModal(false)} footer={null} >
+        <CoinInfoModal coin={coin}/>
       </Modal>
+      <Drawer width={600} title="Basic Drawer" onClose={() => setDrawer(false)} open={drawer}>
+        <AddAssetForm/>
+      </Drawer>
 </Layout.Header>;
 }
 
