@@ -50,8 +50,15 @@ export default function AddAssetForm() {
   };
 
   function handleChangeAmount(value) {
+    const price = form.getFieldValue("price");
     form.setFieldsValue({
-      total: +(value * coin.price).toFixed(2),
+      total: +(value * price).toFixed(2),
+    });
+  }
+  function handleChangePrice(value) {
+    const amount = form.getFieldValue("amount");
+    form.setFieldsValue({
+      total: +(amount * value).toFixed(2),
     });
   }
 
@@ -115,17 +122,8 @@ export default function AddAssetForm() {
           />
         </Form.Item>
 
-        <Form.Item
-          label="Price"
-          name="price"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-        >
-          <InputNumber disabled style={{ width: "100%" }} />
+        <Form.Item label="Price" name="price">
+          <InputNumber onChange={handleChangePrice} style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item label="Date & Time" name="date">
           <DatePicker showTime />
