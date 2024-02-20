@@ -16,6 +16,7 @@ import { useCrypto } from "./Layout/AppContent.jsx";
 
 export default function AddAssetForm() {
   const { crypto } = useCrypto();
+  const [form] = Form.useForm();
   const [coin, setCoin] = useState(null);
   if (!coin) {
     return (
@@ -48,6 +49,12 @@ export default function AddAssetForm() {
     console.log("finish", v);
   };
 
+  function handleChangeAmount(value) {
+    form.setFieldsValue({
+      total: +(value * coin.price).toFixed(2),
+    });
+  }
+
   const validateMessage = {
     required: "${label} is required!",
     types: {
@@ -74,6 +81,7 @@ export default function AddAssetForm() {
       </Flex>
       <Divider />
       <Form
+        form={form}
         name="basic"
         labelCol={{
           span: 4,
@@ -101,12 +109,15 @@ export default function AddAssetForm() {
             },
           ]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber
+            onChange={handleChangeAmount}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
 
         <Form.Item
           label="Price"
-          name="password"
+          name="price"
           rules={[
             {
               required: true,
@@ -114,7 +125,7 @@ export default function AddAssetForm() {
             },
           ]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber disabled style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item label="Date & Time" name="date">
           <DatePicker showTime />
