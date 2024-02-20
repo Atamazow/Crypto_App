@@ -33,7 +33,7 @@ export default function CoinInfoModal({ coin }) {
       </Typography.Paragraph>
       <Typography.Paragraph>
         <Typography.Text strong>Price: </Typography.Text>
-        {coin.price.toFixed(2)}$
+        {coin.price.toFixed(2   )}$
       </Typography.Paragraph>
       <Typography.Paragraph>
         <Typography.Text strong>Price BTC: </Typography.Text>
