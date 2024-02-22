@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Button, Select, Space, Modal, Drawer } from "antd";
-import { useCrypto } from "./AppContent";
 import CoinInfoModal from "../CoinInfoModal";
 import AddAssetForm from "../AddAssetForm";
+import { useCrypto } from "../../Context/crypto-context.jsx";
 
 const headerStyle = {
   color: "#fff",
@@ -18,7 +18,7 @@ function AppHeader(props) {
   const [modal, setModal] = useState(false);
   const [coin, setCoin] = useState(null);
   const { crypto } = useCrypto();
-  const [drawer, setDrawer] = useState(true);
+  const [drawer, setDrawer] = useState(false);
   useEffect(() => {
     const keypress = (event) => {
       if (event.key === "/") {

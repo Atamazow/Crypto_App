@@ -11,8 +11,8 @@ import {
   DatePicker,
   Result,
 } from "antd";
-import { useCrypto } from "./Layout/AppContent.jsx";
 import CoinInfo from "./Layout/CoinInfo.jsx";
+import { useCrypto } from "../Context/crypto-context.jsx";
 
 export default function AddAssetForm({ onClose }) {
   const { crypto, addAsset } = useCrypto();
