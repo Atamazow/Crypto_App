@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import {
   Button,
-  Checkbox,
   Divider,
   Flex,
-  Input,
   Select,
   Space,
   Typography,
   Form,
   InputNumber,
   DatePicker,
+  Result,
 } from "antd";
 import { useCrypto } from "./Layout/AppContent.jsx";
+import CoinInfo from "./Layout/CoinInfo.jsx";
 
-export default function AddAssetForm() {
+export default function AddAssetForm({ onClose }) {
   const { crypto } = useCrypto();
   const [form] = Form.useForm();
   const [coin, setCoin] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
   if (!coin) {
     return (
       <Select
@@ -45,8 +46,29 @@ export default function AddAssetForm() {
       />
     );
   }
-  const onFinish = (v) => {
-    console.log("finish", v);
+  if (submitted) {
+    return (
+      <Result
+        status="success"
+        title="New Asset Added"
+        subTitle={`Added ${42} of ${coin.name} by price ${23}`}
+        extra={[
+          <Button type="primary" key="console" onClick={onClose}>
+            Go Console
+          </Button>,
+        ]}
+      />
+    );
+  }
+  //Откуда у values эти параметры
+  const onFinish = (values) => {
+    const newAsset = {
+      id: coin.id,
+      amount: values.amount,
+      price: values.price,
+      date: values.date?.$d ?? new Date(),
+    };
+    setSubmitted(true);
   };
 
   function handleChangeAmount(value) {
@@ -73,19 +95,7 @@ export default function AddAssetForm() {
   };
   return (
     <>
-      <Flex align="center">
-        <img
-          src={coin.icon}
-          alt={coin.name}
-          style={{
-            width: 40,
-            marginRight: 10,
-          }}
-        />
-        <Typography.Text label={2} style={{ margin: 0 }}>
-          {coin.name}
-        </Typography.Text>
-      </Flex>
+      <CoinInfo coin={coin} />
       <Divider />
       <Form
         form={form}
