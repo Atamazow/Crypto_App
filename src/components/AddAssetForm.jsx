@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Button,
   Divider,
@@ -19,6 +19,7 @@ export default function AddAssetForm({ onClose }) {
   const [form] = Form.useForm();
   const [coin, setCoin] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const assetRef = useRef();
   if (!coin) {
     return (
       <Select
@@ -51,7 +52,7 @@ export default function AddAssetForm({ onClose }) {
       <Result
         status="success"
         title="New Asset Added"
-        subTitle={`Added ${42} of ${coin.name} by price ${23}`}
+        subTitle={`Added ${assetRef.current.amount} of ${coin.name} by price ${assetRef.current.price}`}
         extra={[
           <Button type="primary" key="console" onClick={onClose}>
             Go Console
@@ -68,6 +69,7 @@ export default function AddAssetForm({ onClose }) {
       price: values.price,
       date: values.date?.$d ?? new Date(),
     };
+    assetRef.current = newAsset;
     setSubmitted(true);
   };
 
@@ -83,6 +85,7 @@ export default function AddAssetForm({ onClose }) {
       total: +(amount * value).toFixed(2),
     });
   }
+  console.log(assetRef);
 
   const validateMessage = {
     required: "${label} is required!",
