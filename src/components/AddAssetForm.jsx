@@ -15,7 +15,7 @@ import { useCrypto } from "./Layout/AppContent.jsx";
 import CoinInfo from "./Layout/CoinInfo.jsx";
 
 export default function AddAssetForm({ onClose }) {
-  const { crypto } = useCrypto();
+  const { crypto, addAsset } = useCrypto();
   const [form] = Form.useForm();
   const [coin, setCoin] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -71,6 +71,7 @@ export default function AddAssetForm({ onClose }) {
     };
     assetRef.current = newAsset;
     setSubmitted(true);
+    addAsset(newAsset);
   };
 
   function handleChangeAmount(value) {
@@ -114,13 +115,13 @@ export default function AddAssetForm({ onClose }) {
         }}
         onFinish={onFinish}
         initialValues={{
-          price: +coin.price.toFixed(2),
+          price: coin ? parseFloat(coin.price).toFixed(2) : 0,
         }}
         validateMessage={validateMessage}
       >
         <Form.Item
-          label="Amount"
-          name="Amount"
+          label="amount"
+          name="amount"
           rules={[
             {
               required: true,
