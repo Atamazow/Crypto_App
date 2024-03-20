@@ -1,21 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Layout, Card, Statistic, List, Typography, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { capitalize } from "../../utils.js";
 import cryptoContext from "../../Context/crypto-context.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCrypto } from "../../redux/slices/cryptoSlice.js";
 const siderStyle = {
   padding: "1rem",
 };
 
 function AppSideBar(props) {
-  const {  assets } = useContext(cryptoContext);
- 
+  const crypto = useSelector((state) => state.cryptoSlice.crypto);
+  const dispatch = useDispatch();
+  const getCrypto = () => {
+    dispatch(fetchCrypto());
+  };
+  useEffect(() => {
+    getCrypto();
+  }, []);
+  console.log(crypto);
   return (
     <Layout.Sider width="25%" style={siderStyle}>
-      {assets.map((asset) => (
+      {crypto?.map((asset) => (
         <Card key={asset.id} style={{ marginBottom: "1rem" }}>
           <Statistic
-            title={capitalize(asset.id)}
+            title={capitalize(asset.name)}
             value={asset.totalAmount}
             precision={2}
             valueStyle={{
@@ -24,6 +33,7 @@ function AppSideBar(props) {
             prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
             suffix="$"
           />
+
           <List
             size="small"
             dataSource={[
@@ -47,7 +57,7 @@ function AppSideBar(props) {
                   {item.isPlain && item.value}
                   {!item.isPlain && (
                     <Typography.Text type={asset.grow ? "success" : "danger"}>
-                      {item.value.toFixed(2)} $
+                      {item?.value?.toFixed(2)} $
                     </Typography.Text>
                   )}
                 </span>

@@ -14,27 +14,32 @@ export function CryptoContextProvider({ children }) {
   const [assets, setAssets] = useState([]);
 
   function mapAssets(result, assets) {
-    return assets.map((asset) => {
+    return assets?.map((asset) => {
       const coin = result.find((c) => c.id === asset.id);
       return {
         ...asset,
-        grow: asset.price < coin.price,
-        growPercent: percentDifference(asset.price, coin.price),
-        totalAmount: asset.amount * coin.price,
-        name: coin.name,
-        totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+        // grow: asset.price < coin.price,
+        // growPercent: percentDifference(asset.price, coin.price),
+        // totalAmount: asset.amount * coin.price,
+        // name: coin.name,
+        // totalProfit: asset.amount * coin.price - asset.amount * asset.price,
       };
     });
   }
 
   useEffect(() => {
     async function preLoad() {
-      setLoading(true);
-      const { result } = await fakeFetchCrypto();
-      const fetchedAssets = await FetchAssets();
-      setAssets(mapAssets(result, fetchedAssets));
-      setCrypto(result);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const { result } = await fakeFetchCrypto();
+        const fetchedAssets = await FetchAssets();
+        setAssets(mapAssets(result, fetchedAssets));
+        setCrypto(result);
+      } catch (error) {
+        console.error("Ошибка при загрузке данных:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     preLoad();
   }, []);
